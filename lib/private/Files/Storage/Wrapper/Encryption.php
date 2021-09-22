@@ -762,7 +762,7 @@ class Encryption extends Wrapper {
 				if (defined('STDERR')) {
 					fwrite(STDERR, "	- Fail to copy '$sourceInternalPath' to '$targetInternalPath/': " . $e->getMessage() . PHP_EOL);
 				}
-				return false;
+				$result = false;
 			}
 			if ($result) {
 				if ($preserveMtime) {
