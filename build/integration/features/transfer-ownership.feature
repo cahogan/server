@@ -10,7 +10,7 @@ Feature: transfer-ownership
 		And using received transfer folder of "user1" as dav path
 		Then Downloaded content when downloading file "/somefile.txt" with range "bytes=0-6" should be "This is"
 		And using old dav path
-		And as "user0" the file "/somefile.txt" does not exist
+		And as "user0" the file "/somefile.txt" exists
 		And using received transfer folder of "user1" as dav path
 		And as "user1" the file "/somefile.txt" exists
 
@@ -25,7 +25,7 @@ Feature: transfer-ownership
 		And using received transfer folder of "user1" as dav path
 		Then Downloaded content when downloading file "/test/somefile.txt" with range "bytes=0-6" should be "This is"
 		And using old dav path
-		And as "user0" the folder "/test" does not exist
+		And as "user0" the folder "/test" exists
 		And using received transfer folder of "user1" as dav path
 		And as "user1" the folder "/test" exists
 
@@ -41,7 +41,7 @@ Feature: transfer-ownership
 		Then Downloaded content when downloading file "/test/somefile.txt" with range "bytes=0-6" should be "This is"
 		And transfer folder name contains "transferred from user0 -risky- ヂspḷay -na|-|e- on"
 		And using old dav path
-		And as "user0" the folder "/test" does not exist
+		And as "user0" the folder "/test" exists
 		And using received transfer folder of "user1" as dav path
 		And as "user1" the folder "/test" exists
 
@@ -57,16 +57,16 @@ Feature: transfer-ownership
 		And As an "user2"
 		Then Downloaded content when downloading file "/somefile.txt" with range "bytes=0-6" should be "This is"
 		And using old dav path
-		And as "user0" the file "/somefile.txt" does not exist
+		And as "user0" the file "/somefile.txt" exists
 		And using received transfer folder of "user1" as dav path
 		And as "user1" the file "/somefile.txt" exists
 		And As an "user1"
 		And Getting info of last share
 		And the OCS status code should be "100"
 		And Share fields of last share match with
-			| uid_owner | user1 |
+			| uid_owner      | user1 |
 			| uid_file_owner | user1 |
-			| share_with | user2 |
+			| share_with     | user2 |
 
 	Scenario: transferring ownership of folder shared with third user
 		Given user "user0" exists
@@ -81,16 +81,16 @@ Feature: transfer-ownership
 		And As an "user2"
 		Then Downloaded content when downloading file "/test/somefile.txt" with range "bytes=0-6" should be "This is"
 		And using old dav path
-		And as "user0" the folder "/test" does not exist
+		And as "user0" the folder "/test" exists
 		And using received transfer folder of "user1" as dav path
 		And as "user1" the folder "/test" exists
 		And As an "user1"
 		And Getting info of last share
 		And the OCS status code should be "100"
 		And Share fields of last share match with
-			| uid_owner | user1 |
+			| uid_owner      | user1 |
 			| uid_file_owner | user1 |
-			| share_with | user2 |
+			| share_with     | user2 |
 
 	Scenario: transferring ownership of folder shared with transfer recipient
 		Given user "user0" exists
@@ -106,7 +106,7 @@ Feature: transfer-ownership
 		And using received transfer folder of "user1" as dav path
 		And Downloaded content when downloading file "/test/somefile.txt" with range "bytes=0-6" should be "This is"
 		And using old dav path
-		And as "user0" the folder "/test" does not exist
+		And as "user0" the folder "/test" exists
 		And using received transfer folder of "user1" as dav path
 		And as "user1" the folder "/test" exists
 		And Getting info of last share
@@ -117,7 +117,7 @@ Feature: transfer-ownership
 		And user "user0" exists
 		And user "user1" exists
 		And user "user2" exists
-    	And user "user2" belongs to group "group1"
+		And user "user2" belongs to group "group1"
 		And User "user0" created a folder "/test"
 		And User "user0" uploads file "data/textfile.txt" to "/test/somefile.txt"
 		And folder "/test" of user "user0" is shared with group "group1" with permissions 31
@@ -129,16 +129,16 @@ Feature: transfer-ownership
 		And As an "user2"
 		Then Downloaded content when downloading file "/test/somefile.txt" with range "bytes=0-6" should be "This is"
 		And using old dav path
-		And as "user0" the folder "/test" does not exist
+		And as "user0" the folder "/test" exists
 		And using received transfer folder of "user1" as dav path
 		And as "user1" the folder "/test" exists
 		And As an "user1"
 		And Getting info of last share
 		And the OCS status code should be "100"
 		And Share fields of last share match with
-			| uid_owner | user1 |
+			| uid_owner      | user1 |
 			| uid_file_owner | user1 |
-			| share_with | user2 |
+			| share_with     | user2 |
 
 	Scenario: transferring ownership of file shares to user with the same id as the group
 		Given user "user0" exists
@@ -154,16 +154,16 @@ Feature: transfer-ownership
 		And As an "user2"
 		Then Downloaded content when downloading file "/somefile.txt" with range "bytes=0-6" should be "This is"
 		And using old dav path
-		And as "user0" the file "/somefile.txt" does not exist
+		And as "user0" the file "/somefile.txt" exists
 		And using received transfer folder of "user1" as dav path
 		And as "test" the file "/somefile.txt" exists
 		And As an "test"
 		And Getting info of last share
 		And the OCS status code should be "100"
 		And Share fields of last share match with
-			| uid_owner | test |
+			| uid_owner      | test |
 			| uid_file_owner | test |
-			| share_with | test |
+			| share_with     | test |
 
 	Scenario: transferring ownership of folder reshared with another user
 		Given user "user0" exists
@@ -182,15 +182,17 @@ Feature: transfer-ownership
 		Then Downloaded content when downloading file "/test/somefile.txt" with range "bytes=0-6" should be "This is"
 		And using old dav path
 		And as "user0" the folder "/test" exists
+		# And user "user1" accepts last share
+		# And as "user1" the folder "/test" exists
 		And using received transfer folder of "user1" as dav path
 		And as "user1" the folder "/test" does not exist
 		And As an "user0"
 		And Getting info of last share
 		And the OCS status code should be "100"
 		And Share fields of last share match with
-			| uid_owner | user0 |
+			| uid_owner      | user0 |
 			| uid_file_owner | user3 |
-			| share_with | user2 |
+			| share_with     | user2 |
 
 	Scenario: transferring ownership of folder reshared with group to a user in the group
 		Given user "user0" exists
@@ -211,15 +213,17 @@ Feature: transfer-ownership
 		Then Downloaded content when downloading file "/test/somefile.txt" with range "bytes=0-6" should be "This is"
 		And using old dav path
 		And as "user0" the folder "/test" exists
+		# And user "user1" accepts last share
+		# And as "user1" the folder "/test" exists
 		And using received transfer folder of "user1" as dav path
 		And as "user1" the folder "/test" does not exist
 		And As an "user1"
 		And Getting info of last share
 		And the OCS status code should be "100"
 		And Share fields of last share match with
-			| uid_owner | user1 |
-			| uid_file_owner | user3 |
-			| share_with | group1 |
+			| uid_owner      | user1  |
+			| uid_file_owner | user3  |
+			| share_with     | group1 |
 
 	Scenario: transferring ownership of folder reshared with group to a user not in the group
 		Given user "user0" exists
@@ -246,9 +250,9 @@ Feature: transfer-ownership
 		And Getting info of last share
 		And the OCS status code should be "100"
 		And Share fields of last share match with
-			| uid_owner | user0 |
-			| uid_file_owner | user3 |
-			| share_with | group1 |
+			| uid_owner      | user0  |
+			| uid_file_owner | user3  |
+			| share_with     | group1 |
 
 	Scenario: transferring ownership does not transfer received shares
 		Given user "user0" exists
@@ -268,9 +272,9 @@ Feature: transfer-ownership
 		And Getting info of last share
 		And the OCS status code should be "100"
 		And Share fields of last share match with
-			| uid_owner | user2 |
+			| uid_owner      | user2 |
 			| uid_file_owner | user2 |
-			| share_with | user0 |
+			| share_with     | user0 |
 
 	@local_storage
 	Scenario: transferring ownership does not transfer external storage
@@ -316,7 +320,7 @@ Feature: transfer-ownership
 		And using received transfer folder of "user1" as dav path
 		Then Downloaded content when downloading file "/somefile.txt" with range "bytes=0-6" should be "This is"
 		And using old dav path
-		And as "user0" the file "/somefile.txt" does not exist
+		And as "user0" the file "/somefile.txt" exists
 		And using received transfer folder of "user1" as dav path
 		And as "user1" the file "/somefile.txt" exists
 
@@ -331,7 +335,7 @@ Feature: transfer-ownership
 		And using received transfer folder of "user1" as dav path
 		Then Downloaded content when downloading file "/test/somefile.txt" with range "bytes=0-6" should be "This is"
 		And using old dav path
-		And as "user0" the folder "/test" does not exist
+		And as "user0" the folder "/test" exists
 		And using received transfer folder of "user1" as dav path
 		And as "user1" the folder "/test" exists
 
@@ -347,7 +351,7 @@ Feature: transfer-ownership
 		Then Downloaded content when downloading file "/test/somefile.txt" with range "bytes=0-6" should be "This is"
 		And transfer folder name contains "transferred from user0 -risky- ヂspḷay -na|-|e- on"
 		And using old dav path
-		And as "user0" the folder "/test" does not exist
+		And as "user0" the folder "/test" exists
 		And using received transfer folder of "user1" as dav path
 		And as "user1" the folder "/test" exists
 
@@ -364,7 +368,7 @@ Feature: transfer-ownership
 		And using received transfer folder of "user1" as dav path
 		Then Downloaded content when downloading file "/test/somefile.txt" with range "bytes=0-6" should be "This is"
 		And using old dav path
-		And as "user0" the folder "/test" does not exist
+		And as "user0" the folder "/test" exists
 		And as "user0" the folder "/test2" exists
 		And as "user0" the file "/test2/somefile.txt" exists
 		And using received transfer folder of "user1" as dav path
@@ -386,7 +390,7 @@ Feature: transfer-ownership
 		And using received transfer folder of "user1" as dav path
 		Then Downloaded content when downloading file "/test/somefile.txt" with range "bytes=0-6" should be "This is"
 		And using old dav path
-		And as "user0" the folder "/test" does not exist
+		And as "user0" the folder "/test" exists
 		And as "user0" the folder "/test2" exists
 		And as "user0" the file "/test2/sharedfile.txt" exists
 		And using received transfer folder of "user1" as dav path
@@ -398,9 +402,9 @@ Feature: transfer-ownership
 		And Getting info of last share
 		And the OCS status code should be "100"
 		And Share fields of last share match with
-			| uid_owner | user0 |
+			| uid_owner      | user0 |
 			| uid_file_owner | user0 |
-			| share_with | user1 |
+			| share_with     | user1 |
 
 	Scenario: transferring ownership of file shares
 		Given user "user0" exists
@@ -415,16 +419,16 @@ Feature: transfer-ownership
 		And As an "user2"
 		Then Downloaded content when downloading file "/somefile.txt" with range "bytes=0-6" should be "This is"
 		And using old dav path
-		And as "user0" the folder "/test" does not exist
+		And as "user0" the folder "/test" exists
 		And using received transfer folder of "user1" as dav path
 		And as "user1" the folder "/test" exists
 		And As an "user1"
 		And Getting info of last share
 		And the OCS status code should be "100"
 		And Share fields of last share match with
-			| uid_owner | user1 |
+			| uid_owner      | user1 |
 			| uid_file_owner | user1 |
-			| share_with | user2 |
+			| share_with     | user2 |
 
 	Scenario: transferring ownership of folder shared with third user
 		Given user "user0" exists
@@ -439,16 +443,16 @@ Feature: transfer-ownership
 		And As an "user2"
 		Then Downloaded content when downloading file "/test/somefile.txt" with range "bytes=0-6" should be "This is"
 		And using old dav path
-		And as "user0" the folder "/test" does not exist
+		And as "user0" the folder "/test" exists
 		And using received transfer folder of "user1" as dav path
 		And as "user1" the folder "/test" exists
 		And As an "user1"
 		And Getting info of last share
 		And the OCS status code should be "100"
 		And Share fields of last share match with
-			| uid_owner | user1 |
+			| uid_owner      | user1 |
 			| uid_file_owner | user1 |
-			| share_with | user2 |
+			| share_with     | user2 |
 
 	Scenario: transferring ownership of folder shared with transfer recipient
 		Given user "user0" exists
@@ -464,7 +468,7 @@ Feature: transfer-ownership
 		And using received transfer folder of "user1" as dav path
 		And Downloaded content when downloading file "/test/somefile.txt" with range "bytes=0-6" should be "This is"
 		And using old dav path
-		And as "user0" the folder "/test" does not exist
+		And as "user0" the folder "/test" exists
 		And using received transfer folder of "user1" as dav path
 		And as "user1" the folder "/test" exists
 		And Getting info of last share
@@ -494,9 +498,9 @@ Feature: transfer-ownership
 		And Getting info of last share
 		And the OCS status code should be "100"
 		And Share fields of last share match with
-			| uid_owner | user1 |
+			| uid_owner      | user1 |
 			| uid_file_owner | user1 |
-			| share_with | user2 |
+			| share_with     | user2 |
 
 	Scenario: transferring ownership of path fails for reshares
 		Given user "user0" exists
@@ -529,7 +533,7 @@ Feature: transfer-ownership
 		Then as "user1" the folder "/sub" exists
 		And as "user1" the folder "/sub/test" does not exist
 		And using old dav path
-		And as "user0" the folder "/sub" does not exist
+		And as "user0" the folder "/sub" exists
 		And Getting info of last share
 		And the OCS status code should be "404"
 
@@ -557,7 +561,7 @@ Feature: transfer-ownership
 		And as "user1" the folder "/transfer-share" does not exist
 		And as "user1" the folder "/do-not-transfer" does not exist
 		And using old dav path
-		And as "user0" the folder "/sub" does not exist
+		And as "user0" the folder "/sub" exists
 		And as "user0" the folder "/do-not-transfer" exists
 		And Getting info of last share
 		And the OCS status code should be "404"
