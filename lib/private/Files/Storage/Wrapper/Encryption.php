@@ -744,7 +744,15 @@ class Encryption extends Wrapper {
 			if (is_resource($dh)) {
 				while ($result and ($file = readdir($dh)) !== false) {
 					if (!Filesystem::isIgnoredDir($file)) {
-						$result &= $this->copyFromStorage($sourceStorage, $sourceInternalPath . '/' . $file, $targetInternalPath . '/' . $file, false, $isRename);
+						// Here we catch potential encryption errors to prevent them from blocking the copy.
+						try {
+							$result &= $this->copyFromStorage($sourceStorage, $sourceInternalPath . '/' . $file, $targetInternalPath . '/' . $file, false, $isRename);
+						} catch (\Exception $e) {
+							if (defined('STDERR')) {
+								fwrite(STDERR, "	- Fail to copy '$sourceInternalPath/$file' to '$targetInternalPath/$file'. See server logs for more context" . PHP_EOL);
+							}
+							$this->logger->logException(new \Exception("Fail to copy '$sourceInternalPath/$file' to '$targetInternalPath/$file'", 0, $e));
+						}
 					}
 				}
 			}
@@ -926,10 +934,10 @@ class Encryption extends Wrapper {
 		}
 
 		$result = [];
-		
+
 		// first check if it is an encrypted file at all
 		// We would do query to filecache only if we know that entry in filecache exists
-		
+
 		$info = $this->getCache()->get($path);
 		if (isset($info['encrypted']) && $info['encrypted'] === true) {
 			$firstBlock = $this->readFirstBlock($path);
