@@ -741,6 +741,7 @@ class Encryption extends Wrapper {
 		if ($sourceStorage->is_dir($sourceInternalPath)) {
 			$dh = $sourceStorage->opendir($sourceInternalPath);
 			$result = $this->mkdir($targetInternalPath);
+			$hadException = false;
 			if (is_resource($dh)) {
 				while ($result and ($file = readdir($dh)) !== false) {
 					if (!Filesystem::isIgnoredDir($file)) {
@@ -748,6 +749,7 @@ class Encryption extends Wrapper {
 						try {
 							$result &= $this->copyFromStorage($sourceStorage, $sourceInternalPath . '/' . $file, $targetInternalPath . '/' . $file, false, $isRename);
 						} catch (\Exception $e) {
+							$hadException = true;
 							if (defined('STDERR')) {
 								fwrite(STDERR, "	- Fail to copy '$sourceInternalPath/$file' to '$targetInternalPath/$file'. See server logs for more context" . PHP_EOL);
 							}
@@ -756,6 +758,7 @@ class Encryption extends Wrapper {
 					}
 				}
 			}
+			$result &= !$hadException;
 		} else {
 			try {
 				$source = $sourceStorage->fopen($sourceInternalPath, 'r');
