@@ -741,24 +741,13 @@ class Encryption extends Wrapper {
 		if ($sourceStorage->is_dir($sourceInternalPath)) {
 			$dh = $sourceStorage->opendir($sourceInternalPath);
 			$result = $this->mkdir($targetInternalPath);
-			$hadException = false;
 			if (is_resource($dh)) {
-				while ($result and ($file = readdir($dh)) !== false) {
+				while (($file = readdir($dh)) !== false) {
 					if (!Filesystem::isIgnoredDir($file)) {
-						// Here we catch potential encryption errors to prevent them from blocking the copy.
-						try {
-							$result &= $this->copyFromStorage($sourceStorage, $sourceInternalPath . '/' . $file, $targetInternalPath . '/' . $file, false, $isRename);
-						} catch (\Exception $e) {
-							$hadException = true;
-							if (defined('STDERR')) {
-								fwrite(STDERR, "	- Fail to copy '$sourceInternalPath/$file' to '$targetInternalPath/$file'. See server logs for more context" . PHP_EOL);
-							}
-							$this->logger->logException(new \Exception("Fail to copy '$sourceInternalPath/$file' to '$targetInternalPath/$file'", 0, $e));
-						}
+						$result &= $this->copyFromStorage($sourceStorage, $sourceInternalPath . '/' . $file, $targetInternalPath . '/' . $file, false, $isRename);
 					}
 				}
 			}
-			$result &= !$hadException;
 		} else {
 			try {
 				$source = $sourceStorage->fopen($sourceInternalPath, 'r');
@@ -769,7 +758,11 @@ class Encryption extends Wrapper {
 			} catch (\Exception $e) {
 				fclose($source);
 				fclose($target);
-				throw $e;
+				$this->logger->logException(new \Exception("Fail to copy '$sourceInternalPath' to '$targetInternalPath'", 0, $e));
+				if (defined('STDERR')) {
+					fwrite(STDERR, "	- Fail to copy '$sourceInternalPath' to '$targetInternalPath/': " . $e->getMessage() . PHP_EOL);
+				}
+				return false;
 			}
 			if ($result) {
 				if ($preserveMtime) {
